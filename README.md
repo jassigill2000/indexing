@@ -48,22 +48,7 @@ which java
 java -version
 ```
 
-4.) Install RabbitMQ:
-```
-curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash
-wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-sudo apt-get update
-sudo apt-get -y install erlang
-sudo apt-get -y install rabbitmq-server
-sudo rabbitmq-plugins enable rabbitmq_amqp1_0
-sudo rabbitmq-plugins enable rabbitmq_management
-sudo service rabbitmq-server start
-sudo rabbitmqctl add_user test test
-sudo rabbitmqctl set_user_tags test administrator
-sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
-
-```
-5.) Install, enable and start Elasticsearch:
+4.) Install, enable and start Elasticsearch:
 ```
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt-get -y install apt-transport-https
@@ -73,9 +58,19 @@ sudo systemctl enable elasticsearch.service
 sudo service elasticsearch start
 sudo service elasticsearch restart
 curl http://localhost:9200
+curl -XPUT 'http://localhost:9200/irods_audit'
+curl -XPUT localhost:9200/irods_audit/_mapping/hostname_mapping -d '
+{
+  "properties": {
+    "hostname": {
+       "type": "string",
+      "index": "not_analyzed"
+    }
+  }
+}'
 ```
 
-6.) Install and configure Logstash:
+5.) Install and configure Logstash:
 ```
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
@@ -166,4 +161,18 @@ To delete all Elasticsearch data and start over:
 curl -X DELETE 'http://localhost:9200/_all'
 ```
 
+6.) Install RabbitMQ:
+```
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash
+wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+sudo apt-get update
+sudo apt-get -y install erlang
+sudo apt-get -y install rabbitmq-server
+sudo rabbitmq-plugins enable rabbitmq_amqp1_0
+sudo rabbitmq-plugins enable rabbitmq_management
+sudo service rabbitmq-server start
+sudo rabbitmqctl add_user test test
+sudo rabbitmqctl set_user_tags test administrator
+sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 
+```
