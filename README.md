@@ -73,16 +73,6 @@ sudo systemctl enable elasticsearch.service
 sudo service elasticsearch start
 sudo service elasticsearch restart
 curl http://localhost:9200
-curl -XPUT 'http://localhost:9200/irods_audit'
-curl -XPUT localhost:9200/irods_audit/_mapping/hostname_mapping -d '
-{
-  "properties": {
-    "hostname": {
-       "type": "string",
-      "index": "not_analyzed"
-    }
-  }
-}'
 ```
 
 6.) Install and configure Logstash:
